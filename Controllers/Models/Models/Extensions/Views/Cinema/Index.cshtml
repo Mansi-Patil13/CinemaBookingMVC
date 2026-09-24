@@ -1,0 +1,72 @@
+@model IEnumerable<CinemaBookingMVC.Models.Booking>
+@{
+    ViewData["Title"] = "Booked Tickets";
+    var movies = ViewBag.Movies as List<CinemaBookingMVC.Models.Movie>;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Booked Tickets</h2>
+        <a asp-action="BookTicket" class="btn btn-primary">Book New Ticket</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Customer</th>
+                <th>Movie</th>
+                <th>Show Date</th>
+                <th>Tickets</th>
+                <th>Booking Status</th>
+                <th>Total Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var movie = movies?.FirstOrDefault(m => m.MovieId == item.MovieId);
+                var status = item.GetBookingStatus();
+                var totalAmount = item.CalculateTotalAmount(movies ?? new List<Movie>());
+
+                <tr>
+                    <td>@item.CustomerName</td>
+                    <td>@(movie != null ? movie.MovieName : "N/A")</td>
+                    <td>@item.ShowDate.ToString("yyyy-MM-dd")</td>
+                    <td>@item.NumberOfTickets</td>
+                    <td>
+                        @* Conditional Bootstrap Alert/Badge Styling *@
+                        @if (status == "Completed")
+                        {
+                            <span class="badge bg-success">Completed</span>
+                        }
+                        else if (status == "Today")
+                        {
+                            <span class="badge bg-warning text-dark">Today</span>
+                        }
+                        else if (status == "Cancelled")
+                        {
+                            <span class="badge bg-danger">Cancelled</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-info text-dark">Upcoming</span>
+                        }
+                    </td>
+                    <td>₹@totalAmount</td>
+                    <td>
+                        <a asp-action="MovieDetails" asp-route-id="@item.BookingId" class="btn btn-sm btn-info text-white">Movie Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
