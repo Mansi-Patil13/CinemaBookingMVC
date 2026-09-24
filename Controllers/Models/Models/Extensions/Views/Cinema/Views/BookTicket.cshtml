@@ -1,0 +1,61 @@
+@model CinemaBookingMVC.Models.Booking
+@{
+    ViewData["Title"] = "Book Ticket";
+    var movies = ViewBag.Movies as List<CinemaBookingMVC.Models.Movie>;
+}
+
+<div class="container mt-4">
+    <h2>Book Movie Ticket</h2>
+    <hr />
+    <form asp-action="BookTicket" asp-controller="Cinema" method="post" class="w-50">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="CustomerName" class="form-label">Customer Name</label>
+            <input asp-for="CustomerName" class="form-control" />
+            <span asp-validation-for="CustomerName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Phone" class="form-label">Phone</label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MovieId" class="form-label">Select Movie</label>
+            <select asp-for="MovieId" class="form-select">
+                <option value="">-- Select Movie --</option>
+                @if (movies != null)
+                {
+                    foreach (var movie in movies)
+                    {
+                        <option value="@movie.MovieId">@movie.MovieName (₹@movie.TicketPrice)</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="MovieId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ShowDate" class="form-label">Show Date</label>
+            <input asp-for="ShowDate" class="form-control" />
+            <span asp-validation-for="ShowDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="NumberOfTickets" class="form-label">Number of Tickets</label>
+            <input asp-for="NumberOfTickets" class="form-control" />
+            <span asp-validation-for="NumberOfTickets" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Book Now</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </form>
+</div>
